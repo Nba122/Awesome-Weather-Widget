@@ -3,7 +3,7 @@
 // Learn more about poke v3 here:
 // http://wiki.antp.co/
 var info = {
-  "poke"    :   3,              // poke version 2
+  "poke"    :   3,              // poke version 3
   "width"   :   2,              // 406 px default
   "height"  :   1,              // 200 px default
   "path"    :   "widget.html",
