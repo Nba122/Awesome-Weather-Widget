@@ -3,6 +3,7 @@
   "background": {
     "scripts": [
       "jquery.js",
+      "api_key.js",
       "xml2array.js",
       "background.js"
     ]
