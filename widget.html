@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="" ng-csp="">
   <head>
-    <script type="text/javascript" src="jquery.js"></script>
-    <script type="text/javascript" src="widget.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/angular.js"></script>
+    <script type="text/javascript" src="/js/weather.js"></script>
     <!--
        - For https://chrome.google.com/webstore/detail/mgmiemnjjchgkmgbeljfocdjjnpjnmcg
        -->
@@ -49,7 +50,8 @@
         display: -webkit-box;
         -webkit-box-orient: horizontal;
         -webkit-box-pack: center;
-        -webkit-box-align: center;
+        -webkit-box-align: start;
+        margin-top: 20px;
       }
 
       .widgets {
@@ -57,7 +59,7 @@
       }
 
       h1 {
-        font-size: 5em;
+        font-size: 4.5em;
         letter-spacing: -2px;
         margin: 0;
       }
@@ -69,18 +71,13 @@
         display: -webkit-box;
         -webkit-box-orient: horizontal;
         -webkit-box-pack: left;
-        -webkit-box-align: center;
+        -webkit-box-align: start;
         background-color: #333;
         color: #fff;
         background: -webkit-gradient(radial, center top, 0, center center, 300, from(#555), to(#111));
         -webkit-border-radius: 10px;
         -webkit-box-shadow: 0px 7px 7px -5px #111;
         border-bottom: 1px inset #444;
-
-        -webkit-animation-name: fall;
-        -webkit-animation-duration: 0.5s;
-        -webkit-animation-iteration-count: 1;
-        -webkit-animation-timing-function: linear;
       }
 
       .weather-widget .weather-info {
@@ -105,12 +102,12 @@
       }
 
       .weather-widget * {
-        text-shadow: 0px 1px 0px #000;
+        text-shadow: 1px 1px 0px #444;
       }
       .cond, .hi, .lo, .day, .conditions-0 {
         text-align: center;
         color: #999;
-        font-size: 0.9em;
+        font-size: 0.85em;
 
         word-wrap: break-word;
 
@@ -143,28 +140,26 @@
       }
 
       /* Non-Android Style */
-      html .non-android-style {
-        display: none;
-      }
-      html.non-android .non-android-style {
+      .non-android-style {
         display: block;
       }
-      html.non-android .weather-widget {
+      .weather-widget {
         background: transparent;
         border-bottom: none;
         -webkit-box-shadow: none;
       }
-     html.non-android * {
+      * {
         text-shadow: 1px 1px 0px #221F20;
       }
-      html.non-android img {
+      img {
         border: 1px solid rgba(34, 31, 32, .5);
+        background-color: #eee;
       }
-      html.non-android .lo, html.non-android .conditions-0, html.non-android .cond {
+      .lo, .conditions-0, .cond {
         color: #FFF;
         opacity: .7;
       }
-      html.non-android .config {
+      .config {
         color: #221F20;
         opacity: .7;
         text-shadow: none;
@@ -185,62 +180,116 @@
         color-stop(1, rgb(70,153,168))
       );
 
-        z-index: -1;
+      z-index: -1;
 
-        display: block;
-        position: absolute;
-        top: 0; bottom: 0;
-        left: 0; right: 0;
+      display: block;
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      }
+
+      #fixed_bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding-left: 23px;
+        padding-bottom: 7px;
+      }
+      #full_forecast {
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      #wui_logo {
+        position: fixed;
+        bottom: 7px;
+        right: 14px;
+      }
+      #wui_logo img {
+        background: none;
+        border: none;
+        vertical-align: bottom;
+      }
+      #error {
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+
+        background-color: #221f20;
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+
+        padding-left: 20px;
+        padding-right: 20px;
+        opacity: .9;
+      }
+      #error h3 {
+        font-size: 20px;
       }
     </style>
   </head>
 
   <body>
     <div class="non-android-style"></div>
-    <div class="widgets">
+    <div class="widgets" ng-controller="WeatherCtrl">
       <div class="weather-widget">
         <div class="box-left main">
-          <h1><span class="now">--</span>&deg;</h1>
-          <div class="place">--</div>
-          <div class="conditions-0">--</div>
+          <h1><span class="now">{{ weather.current_observation['temp_'+unit] | number:0 }}</span>&deg;</h1>
+          <div class="place">{{ weather.current_observation.display_location.city }}</div>
+          <div class="conditions-0">{{ weather.current_observation.weather }}</div>
           <a class="config" href="options.html" target="_top">Configure</a>
         </div>
         <div class="box-left sub">
           <div class="image">
-            <img class="img-1" src="spacer.png" height="40" width="40">
+            <img ng-src="{{weather.forecast.simpleforecast.forecastdays.forecastday[0].icon_url}}" height="40" width="40">
           </div>
-          <div class="day day-1">--</div>
-          <div class="cond conditions-1">--</div>
-          <div class="hi"><span class="high-1">--</span>&deg;</div>
-          <div class="lo"><span class="low-1">--</span>&deg;</div>
+          <div class="day">{{weather.forecast.simpleforecast.forecastdays.forecastday[0].date.weekday_short}}</div>
+          <div class="cond">{{weather.forecast.simpleforecast.forecastdays.forecastday[0].conditions}}</div>
+          <div class="hi">{{ weather.forecast.simpleforecast.forecastdays.forecastday[0].high[unitlong] | number:0 }}&deg;</div>
+          <div class="lo">{{ weather.forecast.simpleforecast.forecastdays.forecastday[0].low[unitlong] | number:0 }}&deg;</div>
         </div>
         <div class="box-left sub">
           <div class="image">
-            <img class="img-2" src="spacer.png" height="40" width="40">
+            <img ng-src="{{weather.forecast.simpleforecast.forecastdays.forecastday[1].icon_url}}" height="40" width="40">
           </div>
-          <div class="day day-2">--</div>
-          <div class="cond conditions-2">--</div>
-          <div class="hi"><span class="high-2">--</span>&deg;</div>
-          <div class="lo"><span class="low-2">--</span>&deg;</div>
+          <div class="day">{{weather.forecast.simpleforecast.forecastdays.forecastday[1].date.weekday_short}}</div>
+          <div class="cond">{{weather.forecast.simpleforecast.forecastdays.forecastday[1].conditions}}</div>
+          <div class="hi">{{ weather.forecast.simpleforecast.forecastdays.forecastday[1].high[unitlong] | number:0 }}&deg;</div>
+          <div class="lo">{{ weather.forecast.simpleforecast.forecastdays.forecastday[1].low[unitlong] | number:0 }}&deg;</div>
         </div>
         <div class="box-left sub">
           <div class="image">
-            <img class="img-3" src="spacer.png" height="40" width="40">
+            <img ng-src="{{weather.forecast.simpleforecast.forecastdays.forecastday[2].icon_url}}" height="40" width="40">
           </div>
-          <div class="day day-3">--</div>
-          <div class="cond conditions-3">--</div>
-          <div class="hi"><span class="high-3">--</span>&deg;</div>
-          <div class="lo"><span class="low-3">--</span>&deg;</div>
+          <div class="day">{{weather.forecast.simpleforecast.forecastdays.forecastday[2].date.weekday_short}}</div>
+          <div class="cond">{{weather.forecast.simpleforecast.forecastdays.forecastday[2].conditions}}</div>
+          <div class="hi">{{ weather.forecast.simpleforecast.forecastdays.forecastday[2].high[unitlong] | number:0 }}&deg;</div>
+          <div class="lo">{{ weather.forecast.simpleforecast.forecastdays.forecastday[2].low[unitlong] | number:0 }}&deg;</div>
         </div>
         <div class="box-left sub">
           <div class="image">
-            <img class="img-4" src="spacer.png" height="40" width="40">
+            <img ng-src="{{weather.forecast.simpleforecast.forecastdays.forecastday[3].icon_url}}" height="40" width="40">
           </div>
-          <div class="day day-4">--</div>
-          <div class="cond conditions-4">--</div>
-          <div class="hi"><span class="high-4">--</span>&deg;</div>
-          <div class="lo"><span class="low-4">--</span>&deg;</div>
+          <div class="day">{{weather.forecast.simpleforecast.forecastdays.forecastday[3].date.weekday_short}}</div>
+          <div class="cond">{{weather.forecast.simpleforecast.forecastdays.forecastday[3].conditions}}</div>
+          <div class="hi">{{ weather.forecast.simpleforecast.forecastdays.forecastday[3].high[unitlong] | number:0 }}&deg;</div>
+          <div class="lo">{{ weather.forecast.simpleforecast.forecastdays.forecastday[3].low[unitlong] | number:0 }}&deg;</div>
         </div>
+      </div>
+      <div id="fixed_bottom">
+        <a id="full_forecast" href="{{ forecast_url }}" target="_top">See full forecast</a>
+        <div id="wui_logo">
+          <a id="full_forecast" href="http://www.wunderground.com/?apiref=5c1723f8db3949e2" target="_top"><img src="/img/wui.png" /></a>
+        </div>
+      </div>
+      <div id="error" ng-show="error">
+        <h3>Error</h3>
+        {{ error }}
       </div>
     </div>
   </body>
