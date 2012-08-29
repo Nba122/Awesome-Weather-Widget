@@ -66,8 +66,14 @@ $(window).bind("storage", function (e) {
 });
 
 function update() {
+  if (!API_KEY || API_KEY === "YOUR_KEY_HERE") {
+    console.error("Need API key. See api_key.example.js", API_KEY);
+    return;
+  }
+
   for (instance_id in localStorage) {
-    var instance = JSON.parse(localStorage[instance_id]),
+    var
+      instance = JSON.parse(localStorage[instance_id]),
       now = Math.round(new Date().getTime()/1000.0),
       place = instance.place || "San Francisco, CA",
       hl = instance.hl || "en";
@@ -76,32 +82,40 @@ function update() {
       instance.last_accessed = Math.round(new Date().getTime()/1000.0);
     }
 
+    if ( !instance.last_update ) {
+      instance.last_update = 1;
+    }
+
     if ( (now - instance.last_accessed) < 129600 ) { // if accessed less than 1.5 days ago
 
       if ( !instance.last_update || !instance.weather) {
         instance.last_update = 1;
       }
 
-      if ( (now - instance.last_update) > 14*60) {
-        var url = "https://www.google.com/ig/api?weather=" + place + "&hl=" + hl,
+      if ( (now - instance.last_update) > 1*60*60 ) { // if updated more than 1 hour ago, update it
+        var
+          url = "https://api.wunderground.com/api/"+API_KEY+"/conditions/forecast/q/"+encodeURIComponent(place)+".xml",
           xml = new JKL.ParseXML( url ),
           data = xml.parse();
 
-        if ( data.xml_api_reply
-          && typeof(data.xml_api_reply) === "object" ) {
-          instance.weather = JSON.stringify( data );
+          console.log(data);
+
+        if ( data && typeof data === "object" ) {
+          instance.weather = data.response;
         }
 
         instance.last_update = Math.round(new Date().getTime()/1000.0);
-
         localStorage.setItem(instance_id, JSON.stringify(instance));
+
       }
-    } else if ( (now - instance.last_accessed) > 2419200 ) { // if accessed more than 4 weeks ago
+    } else if ( (now - instance.last_accessed) > 2419200 ) { // if accessed more than 4 weeks ago, delete it
+      console.warn(instance_id, "hasn't been accessed in 4 weeks. Removing completely.")
+
       // delete instance
       localStorage.removeItem(instance_id);
     }
   }
 }
 
-setInterval(update, 15*60*1000);
+setInterval(update, 4*60*60*1000);
 update();

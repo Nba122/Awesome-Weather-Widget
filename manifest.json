@@ -2,23 +2,23 @@
   "update_url": "http://clients2.google.com/service/update2/crx",
   "background": {
     "scripts": [
-      "jquery.js",
+      "/js/jquery.js",
+      "/js/xml2array.js",
       "api_key.js",
-      "xml2array.js",
-      "background.js"
+      "/js/background.js"
     ]
   },
-  "version": "2012.131.0.3",
+  "version": "2012.135.4.0",
   "name": "Awesome Weather Widget [ANTP]",
   "description": "Awesome weather widget for Awesome New Tab Page. Resizable and multi-placeable. [ANTP]",
   "options_page": "options.html",
   "icons": {
-    "256": "i256.png",
-    "128": "i128.png"
+    "256": "/img/icon256.png",
+    "128": "/img/icon128.png"
   },
-  "permissions": [ "https://www.google.com/" ],
+  "permissions": [ "*://api.wunderground.com/*" ],
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' https://apis.google.com https://ssl.google-analytics.com https://api.flattr.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://api.wunderground.com https://apis.google.com https://ssl.google-analytics.com; object-src 'self'",
   "web_accessible_resources": [
     "widget.html",
     "options.html"
