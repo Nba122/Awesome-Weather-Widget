@@ -62,6 +62,8 @@
         $scope.$apply();
       }
 
+      $scope.weather.style = (instance.style == "M" ? "non-android-style" : "android-style");
+
       $scope.revisionCount++;
     };
 
@@ -71,7 +73,6 @@
       if(e.originalEvent.key === get_guid()) {
         $scope.update();
         setTimeout($scope.$apply, 700);
-        restyle();
       }
     });
 
@@ -81,42 +82,12 @@
 
 /* START :: Legacy Style Code */
 
-  function restyle() {
-    var width  = $(window).width() ,
-        height = $(window).height();
-
-    if ( width < 406 ) {
-      $(".sub").css("display", "none");
-      $(".main").css({
-        "margin-left": (185 - 77) / 2
-      });
-      $(".weather-widget").css({
-        "height": "185px",
-        "width" : "185px"
-      });
-      $("#wui_logo").hide();
-    } else if ( width >= 406 ) {
-      $(".sub").css("display", "block");
-      $(".main").css("margin-left", "");
-      $(".weather-widget").css({
-        "height": "",
-        "width" : ""
-      });
-      $("#wui_logo").show();
-    }
-  }
-
   $(document).ready(function($) {
-    // Handles when the widget is resized
-    restyle();
-    $(window).bind("resize", function() {
-      restyle();
-    });
-
     // Being able to drag images just feels so tacky
     $("img").live("dragstart", function(event) { event.preventDefault(); });
 
     $(".config").attr("href", "options.html" + window.location.hash);
+
   });
 
   /* END :: Legacy Style Code */
