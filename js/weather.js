@@ -94,12 +94,18 @@
 
   function iconReplace(icon) {
     var replace_array = {
-    'partlycloudy':   'partly_cloudy',
-    'mostlycloudy':   'cloudy',
-    'chancetstorms':  'tstorms',
-    'chancerain':     'rain',
-    'hazy':           'fog'
-    }; // there may be more...
+      'partlycloudy':   'partly_cloudy',
+      'partlysunny':    'partly_cloudy',
+      'mostlycloudy':   'cloudy',
+      'mostlysunny':    'partly_cloudy',
+      'chancetstorms':  'tstorms',
+      'chancerain':     'rain',
+      'chancesleet':    'sleet',
+      'flurries':       'light_snow',
+      'chanceflurries': 'light_snow',
+      'chancesnow':     'snow',
+      'hazy':           'fog'
+    };
     return replace_array[icon] || icon;
   }
 
