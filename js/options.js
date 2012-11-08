@@ -9,8 +9,9 @@ function save() {
   instance.place = $("#place").val();
   instance.unit = $("#unit").val();
   // instance.hl = $("#hl").val();
-  // instance.style = $("#style").val();
+  instance.style = $("#style").val();
   // instance.config = $("#config").val();
+  instance.color = $("#colorSelector").css("background-color");
 
   instance.last_update = Math.round(new Date().getTime()/1000.0)-(6*60*60);
 
@@ -33,10 +34,27 @@ function reset() {
   $("#place").val( instance.place || "San Francisco, CA" );
   $("#unit").val( instance.unit || "F" );
   // $("#hl").val( instance.unit || "en" );
-  // $("#style").val( instance.style || "A" );
+  $("#style").val( instance.style || "A" );
   // $("#config").val( instance.style || "show" );
 
   $("#guid").text( get_guid() );
+
+  var color = (instance.color || "#1CA1DC");
+
+  $("#colorSelector").ColorPicker({
+    color: color,
+    onShow: function (colpkr) {
+      $(colpkr).fadeIn(500);
+      return false;
+    },
+    onHide: function (colpkr) {
+      $(colpkr).fadeOut(500);
+      return false;
+    },
+    onChange: function (hsb, hex, rgb) {
+      $("#colorSelector").css("background-color", "#" + hex);
+    }
+  }).css("background-color", color);
 
   if ( instance.last_accessed ) {
     $("#last_accessed").text( dateFormat(instance.last_accessed*1000, "mmmm dS, yyyy, h:MM TT") );
@@ -76,6 +94,13 @@ var bp = chrome.extension.getBackgroundPage();
   po.src = 'https://apis.google.com/js/plusone.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 })();
+
+function style_checker() {
+  var instance;
+  if ( localStorage.getItem(get_guid()) ) {
+    instance = JSON.parse( localStorage.getItem(get_guid()) );
+  }
+}
 
 $(document).ready(function() {
   reset();

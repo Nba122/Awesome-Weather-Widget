@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html ng-app="" ng-csp="">
-  
+
   <head>
     <script type="text/javascript" src="/js/jquery.js"></script>
     <script type="text/javascript" src="/js/angular.js"></script>
@@ -14,43 +14,80 @@
         cursor: default;
       }
 
-      html, body {
-        height: 100%;
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
-        font-family:"Segoe UI", "Droid Sans", Arial, sans-serif;
-        font-size: .9em;
-      }
-
-      html, body {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-box-pack: center;
-        -webkit-box-align: center;
-        width: 100%;
-        height: 100%;
-      }
-
       .widgets {
+        font-family:'HelveticaNeue-Light', HelveticaNeue, Helvetica, Arial !important;
+        font: 16px arial, helvetica, sans-serif;
+        -webkit-user-select:none;
+        position: absolute;
+      }
+
+      .android-style {
         -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         border-radius: 2px;
-        background-color: white;
+        background-color: white !important;
         color: #878787;
-        font-family:'HelveticaNeue-Light', HelveticaNeue, Helvetica, Arial !important;
         padding: 10px;
-        font: 16px arial, helvetica, sans-serif;
-        -webkit-user-select:none;
-
-        position: absolute;
         top: 5px; bottom: 5px;
         left: 5px; right: 5px;
+        padding-right: 0;
+      }
+
+      .android-style-darktext {
+        color: #666666;
+      }
+
+      .android-style-lighttext {
+        /* only here for consistency, the color is set to the default android color */
+      }
+
+      .non-android-style {
+        color: white;
+        background-color: rgb(28, 161, 220);
+        top: 0px; bottom: 0px;
+        left: 0px; right: 0px;
+        padding: 10px;
+        background-image: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgba(255, 255, 255, 0.347656)), to(rgba(255, 255, 255, 0.0390625)));
+      }
+
+      .non-android-style-img {
+        -webkit-filter: brightness(1);
+      }
+
+      .non-android-style-darktext {
+        color: #FFFFFF;
+      }
+
+      .non-android-style-lighttext {
+        color: #FFFFFF;
+        opacity: 0.8;
+      }
+
+      .weathericon {
+        width: 50px;
+        height: 50px;
+      }
+
+      .place {
+        font-size: 25px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .animation {
+        -webkit-transition-property: all;
+        -webkit-transition-duration: 1s;
+      }
+
+      .subs {
+        white-space: nowrap;
       }
 
       .sub {
         float: left;
         text-transform: uppercase;
+        text-align: center;
       }
 
       .subsub {
@@ -59,7 +96,6 @@
       }
 
       .bigtemp {
-        font-size: 60px;
         margin-left: 5px;
       }
 
@@ -67,6 +103,14 @@
         margin-top: 4px;
         width: 45px;
         height: 45px;
+      }
+
+      .left {
+        float: left;
+      }
+
+      .right {
+        float: right;
       }
 
       .inline {
@@ -81,13 +125,29 @@
         color: #666666;
       }
 
+      .condition {
+        text-align: center;
+        width: 50px;
+        font-size: 11px;
+      }
+
       @media screen and (min-width:200px) {
+        .bigtemp {
+          font-size: 48px;
+        }
+
+        .bigtemp-false {
+          font-size: 56px;
+        }
+
         .smalltext {
           font-size: 10px;
         }
+        .subs {
+
+        }
         .sub {
-          margin-left: 17px;
-          margin-top: -5px;
+          margin-left: 18px;
         }
         .sub_img {
           width: 20px;
@@ -96,20 +156,24 @@
       }
 
       @media screen and (min-width:400px) {
-        .place {
-          margin-top: 35px;
+        .bigtemp {
+          font-size: 56px;
+        }
+
+        .bigtemp-false {
+          font-size: 80px;
+        }
+        .mover {
+          margin-top: 17px; /* only for animation purposes, doesn't actually move it */
         }
         .subs {
-          position: absolute;
-          left: 190px;
-          top: 15px;        
+          display: inline-block;
         }
         .smalltext {
           font-size: 16px;
         }
         .sub {
-          margin-top: 25px;
-          margin-left: 3px;
+          margin-left: 5px;
           line-height: 20px;
         }
         .sub_img {
@@ -120,65 +184,68 @@
       }
     </style>
   </head>
-  
+
   <body>
-    <div class="widgets" ng-controller="WeatherCtrl">
-      <div class="place">{{ weather.current_observation.display_location.full }}</div>
-      <div class="condition">{{ weather.current_observation.weather }}</div>
-      <div>
-        <div>
-          <img src="{{ weather.current_observation.icon_url }}" class="inline">
-          <div class="bigtemp inline">
-            {{ weather.current_observation['temp_'+unit] | number:0 }}&deg;</span>
+    <div ng-controller="WeatherCtrl">
+      <div class="widgets {{weather.style}}">
+        <div class="place">{{ weather.current_observation.display_location.city }}</div>
+        <div class="inline-block mover animation">
+          <div class="inline left">
+            <img ng-src="{{ weather.icon_url_custom }}" class="inline weathericon {{weather.style}}-img">
+            <div class="animation condition">{{ weather.current_observation.weather }}</div>
+          </div>
+          <div class="bigtemp inline right bigtemp-{{weather.three}}">
+            {{ weather.current_observation['temp_'+unit] | number:0 }}&deg;
           </div>
         </div>
-      </div>
-      <div class="subs">
-        <div class="sub">
-          <div class="subsub">
-            <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[0].date.weekday_short}}</div>
-            <div class="inline-block">
-              <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[0].conditions}}" src="{{weather.forecast.simpleforecast.forecastdays.forecastday[0].icon_url}}" class="sub_img">
-            </div>
-            <div class="smalltext">
-              <div class="darktext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[0].high[unitlong] | number:0 }}&deg;</div>
-              <div>{{ weather.forecast.simpleforecast.forecastdays.forecastday[0].low[unitlong] | number:0 }}&deg;</div>
-            </div>
-          </div>
-        </div>
-        <div class="sub">
-          <div class="subsub">
-            <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[1].date.weekday_short}}</div>
-            <div class="inline-block">
-              <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[1].conditions}}" src="{{weather.forecast.simpleforecast.forecastdays.forecastday[1].icon_url}}" class="sub_img">
-            </div>
-            <div class="smalltext">
-              <div class="darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[1].high[unitlong] | number:0 }}&deg;</div>
-              <div>{{ weather.forecast.simpleforecast.forecastdays.forecastday[1].low[unitlong] | number:0 }}&deg;</div>
+
+        <div class="subs animation">
+          <div class="sub">
+            <div class="subsub">
+              <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[0].date.weekday_short}}</div>
+              <div class="inline-block">
+                <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[0].conditions}}" ng-src="{{weather.icons[0]}}" class="sub_img animation {{weather.style}}-img">
+              </div>
+              <div class="smalltext">
+                <div class="{{weather.style}}-darktext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[0].high[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-lighttext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[0].low[unitlong] | number:0 }}&deg;</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="sub">
-          <div class="subsub">
-            <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[2].date.weekday_short}}</div>
-            <div class="inline-block">
-              <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[2].conditions}}" src="{{weather.forecast.simpleforecast.forecastdays.forecastday[2].icon_url}}" class="sub_img">
-            </div>
-            <div class="smalltext">
-              <div class="darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[2].high[unitlong] | number:0 }}&deg;</div>
-              <div>{{ weather.forecast.simpleforecast.forecastdays.forecastday[2].low[unitlong] | number:0 }}&deg;</div>
+          <div class="sub">
+            <div class="subsub">
+              <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[1].date.weekday_short}}</div>
+              <div class="inline-block">
+                <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[1].conditions}}" ng-src="{{weather.icons[1]}}" class="sub_img animation {{weather.style}}-img">
+              </div>
+              <div class="smalltext">
+                <div class="{{weather.style}}-darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[1].high[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-lighttext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[1].low[unitlong] | number:0 }}&deg;</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="sub">
-          <div class="subsub">
-            <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[3].date.weekday_short}}</div>
-            <div class="inline-block">
-              <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[3].conditions}}" src="{{weather.forecast.simpleforecast.forecastdays.forecastday[3].icon_url}}" class="sub_img">
+          <div class="sub">
+            <div class="subsub">
+              <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[2].date.weekday_short}}</div>
+              <div class="inline-block">
+                <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[2].conditions}}" ng-src="{{weather.icons[2]}}" class="sub_img animation {{weather.style}}-img">
+              </div>
+              <div class="smalltext">
+                <div class="{{weather.style}}-darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[2].high[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-lighttext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[2].low[unitlong] | number:0 }}&deg;</div>
+              </div>
             </div>
-            <div class="smalltext">
-              <div class="darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[3].high[unitlong] | number:0 }}&deg;</div>
-              <div>{{ weather.forecast.simpleforecast.forecastdays.forecastday[3].low[unitlong] | number:0 }}&deg;</div>
+          </div>
+          <div class="sub">
+            <div class="subsub">
+              <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[3].date.weekday_short}}</div>
+              <div class="inline-block">
+                <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[3].conditions}}" ng-src="{{weather.icons[3]}}" class="sub_img animation {{weather.style}}-img">
+              </div>
+              <div class="smalltext">
+                <div class="{{weather.style}}-darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[3].high[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-lighttext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[3].low[unitlong] | number:0 }}&deg;</div>
+              </div>
             </div>
           </div>
         </div>
