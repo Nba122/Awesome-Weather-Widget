@@ -100,10 +100,22 @@ function style_checker() {
   if ( localStorage.getItem(get_guid()) ) {
     instance = JSON.parse( localStorage.getItem(get_guid()) );
   }
+
+  if($("#style").val() == "M") {
+    $("#color").show();
+  } else {
+    $("#color").hide();
+  }
 }
 
 $(document).ready(function() {
   reset();
+
+  style_checker();
+
+  $("#style").change(function() {
+    style_checker();
+  });
 
   $("form").submit(function(e) {
     save();
