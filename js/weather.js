@@ -111,7 +111,7 @@
 
   /* END :: Weather Controller */
 
-/* START :: Legacy Style Code */
+  /* START :: Legacy Style Code */
 
   $(document).ready(function($) {
     var instance;
@@ -124,7 +124,7 @@
     // Being able to drag images just feels so tacky
     $("img").live("dragstart", function(event) { event.preventDefault(); });
 
-    $(".config").attr("href", "options.html" + window.location.hash);
+    $(".edit").attr("href", "options.html" + window.location.hash);
 
     $(".non-android-style").css("background-color", instance.color || "#1CA1DC");
 

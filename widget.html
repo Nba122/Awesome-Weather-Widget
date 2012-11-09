@@ -80,6 +80,11 @@
         -webkit-transition-duration: 1s;
       }
 
+      .fade {
+        opacity: 1;
+        -webkit-transition-property: opacity;
+      }
+
       .subs {
         white-space: nowrap;
       }
@@ -96,7 +101,8 @@
       }
 
       .bigtemp {
-        margin-left: 5px;
+        width: 120px;
+        text-align: center;
       }
 
       .bigcondition {
@@ -129,6 +135,32 @@
         text-align: center;
         width: 50px;
         font-size: 11px;
+      }
+
+      .edit {
+        width: 23px;
+        height: 23px;
+        background-image: url("/img/pencil.png");
+        background-position: -5px -5px;
+        cursor: pointer;
+        display: inline-block;
+        opacity: 0;
+
+        position: absolute;
+        right: 5px;
+        top: 12px;
+      }
+
+      .edit:hover {
+        background-position: -37px -5px;
+      }
+
+      body:hover .edit {
+        opacity: 1;
+      }
+
+      body:hover .place {
+        width: -webkit-calc(100% - 25px);
       }
 
       @media screen and (min-width:200px) {
@@ -188,7 +220,7 @@
   <body>
     <div ng-controller="WeatherCtrl">
       <div class="widgets {{weather.style}}">
-        <div class="place">{{ weather.current_observation.display_location.city }}</div>
+        <div class="place animation">{{ weather.current_observation.display_location.city }} <a class="edit animation fade" href="options.html" target="_top"></a></div>
         <div class="inline-block mover animation">
           <div class="inline left">
             <img ng-src="{{ weather.icon_url_custom }}" class="inline weathericon {{weather.style}}-img">

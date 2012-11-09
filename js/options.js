@@ -96,11 +96,6 @@ var bp = chrome.extension.getBackgroundPage();
 })();
 
 function style_checker() {
-  var instance;
-  if ( localStorage.getItem(get_guid()) ) {
-    instance = JSON.parse( localStorage.getItem(get_guid()) );
-  }
-
   if($("#style").val() == "M") {
     $("#color").show();
   } else {
