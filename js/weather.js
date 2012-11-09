@@ -51,16 +51,33 @@
         $scope.unitlong = "fahrenheit";
       }
 
-      $scope.forecast_url = addParameter($scope.weather.current_observation.forecast_url, "apiref", "5c1723f8db3949e2");
-
-      if ( $scope.firstApply === true ) {
-
+      if ( Math.round(($scope.weather.current_observation['temp_'+$scope.unit])).toString().length > 2 ) {
+        $scope.weather.three = true;
+      } else {
+        $scope.weather.three = false;
       }
 
-      console.log($scope.revisionCount);
+      $scope.forecast_url = addParameter($scope.weather.current_observation.forecast_url, "apiref", "5c1723f8db3949e2");
+
+      //console.log($scope.revisionCount);
       if ( $scope.revisionCount !== 0 ) {
         $scope.$apply();
       }
+
+      //theme changes (so it changes while ANTP is open, after changing settings)
+      $scope.weather.style = (instance.style == "M" ? "non-android-style" : "android-style");
+      if ($scope.weather.style == "non-android-style") {
+        $(".widgets").css("background-color", instance.color || "#1CA1DC");
+      } 
+
+      // "custom" icons
+      $scope.weather.icon_url_custom = "/img/weather/" + iconReplace($scope.weather.current_observation.icon) + ".png";
+      $scope.weather.icons = {};
+      var x = 0;
+      $.each($scope.weather.forecast.simpleforecast.forecastdays.forecastday, function(key, val) {
+        $scope.weather.icons[x] = "/img/weather/" + iconReplace(val.icon) + ".png";
+        x++;
+      });
 
       $scope.revisionCount++;
     };
@@ -71,52 +88,46 @@
       if(e.originalEvent.key === get_guid()) {
         $scope.update();
         setTimeout($scope.$apply, 700);
-        restyle();
       }
     });
-
   }
 
-  /* END :: Recently Closed Tabs Menu */
-
-/* START :: Legacy Style Code */
-
-  function restyle() {
-    var width  = $(window).width() ,
-        height = $(window).height();
-
-    if ( width < 406 ) {
-      $(".sub").css("display", "none");
-      $(".main").css({
-        "margin-left": (185 - 77) / 2
-      });
-      $(".weather-widget").css({
-        "height": "185px",
-        "width" : "185px"
-      });
-      $("#wui_logo").hide();
-    } else if ( width >= 406 ) {
-      $(".sub").css("display", "block");
-      $(".main").css("margin-left", "");
-      $(".weather-widget").css({
-        "height": "",
-        "width" : ""
-      });
-      $("#wui_logo").show();
-    }
+  function iconReplace(icon) {
+    var replace_array = {
+      'partlycloudy':   'partly_cloudy',
+      'partlysunny':    'partly_cloudy',
+      'mostlycloudy':   'cloudy',
+      'mostlysunny':    'partly_cloudy',
+      'chancetstorms':  'tstorms',
+      'chancerain':     'rain',
+      'chancesleet':    'sleet',
+      'flurries':       'light_snow',
+      'chanceflurries': 'light_snow',
+      'chancesnow':     'snow',
+      'hazy':           'fog'
+    };
+    return replace_array[icon] || icon;
   }
+
+  /* END :: Weather Controller */
+
+  /* START :: Legacy Style Code */
 
   $(document).ready(function($) {
-    // Handles when the widget is resized
-    restyle();
-    $(window).bind("resize", function() {
-      restyle();
-    });
+    var instance;
+    if ( localStorage.getItem(get_guid()) ) {
+      instance = JSON.parse( localStorage.getItem(get_guid()) );
+    } else {
+      instance = {};
+    }
 
     // Being able to drag images just feels so tacky
     $("img").live("dragstart", function(event) { event.preventDefault(); });
 
-    $(".config").attr("href", "options.html" + window.location.hash);
+    $(".edit").attr("href", "options.html" + window.location.hash);
+
+    $(".non-android-style").css("background-color", instance.color || "#1CA1DC");
+
   });
 
   /* END :: Legacy Style Code */
