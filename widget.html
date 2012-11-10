@@ -14,11 +14,25 @@
         cursor: default;
       }
 
-      .widgets {
-        font-family:'HelveticaNeue-Light', HelveticaNeue, Helvetica, Arial !important;
+      h3 {
+        margin-top: 8px;
+      }
+
+      .widgets, .error {
+        font-family: 'HelveticaNeue-Light', HelveticaNeue, Helvetica, Arial !important;
         font: 16px arial, helvetica, sans-serif;
-        -webkit-user-select:none;
+        -webkit-user-select: none;
         position: absolute;
+        top: 0px; bottom: 0px;
+        left: 0px; right: 0px;
+      }
+
+      .error {
+        background-image: url("/img/nighttime_error.jpg");
+        background-size: 406px 200px;
+        color: white;
+        padding: 5px;
+        display: none;
       }
 
       .android-style {
@@ -185,6 +199,9 @@
           width: 20px;
           height: 20px;
         }
+        .error {
+          padding-right: 20px;
+        }
       }
 
       @media screen and (min-width:400px) {
@@ -219,7 +236,7 @@
 
   <body>
     <div ng-controller="WeatherCtrl">
-      <div class="widgets {{weather.style}}">
+      <div class="widgets animation {{weather.style}}">
         <div class="place animation">{{ weather.current_observation.display_location.city }} <a class="edit animation fade" href="options.html" target="_top"></a></div>
         <div class="inline-block mover animation">
           <div class="inline left">
@@ -281,6 +298,13 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="error">
+        <h3>Who turned out the sun?</h3>
+        <p>
+        Is your location valid?
+        <a class="edit animation fade" href="options.html" target="_top"></a>
       </div>
     </div>
   </body>

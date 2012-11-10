@@ -34,9 +34,13 @@
 
       if (instance.weather.error) {
         $scope.error = instance.weather.error.description;
+        $(".widgets").hide();
+        $(".error").show();
         return;
       } else {
         $scope.error = false;
+        $(".widgets").show();
+        $(".error").hide();
       }
 
       $scope.place = instance.place || "San Francisco, CA";
@@ -59,14 +63,13 @@
 
       $scope.forecast_url = addParameter($scope.weather.current_observation.forecast_url, "apiref", "5c1723f8db3949e2");
 
-      //console.log($scope.revisionCount);
       if ( $scope.revisionCount !== 0 ) {
         $scope.$apply();
       }
 
       //theme changes (so it changes while ANTP is open, after changing settings)
-      $scope.weather.style = (instance.style == "M" ? "non-android-style" : "android-style");
-      if ($scope.weather.style == "non-android-style") {
+      $scope.weather.style = (instance.style === "M" ? "non-android-style" : "android-style");
+      if ($scope.weather.style === "non-android-style") {
         $(".widgets").css("background-color", instance.color || "#1CA1DC");
       } 
 

@@ -101,7 +101,12 @@ function update() {
           console.log(data);
 
         if ( data && typeof data === "object" ) {
-          instance.weather = data.response;
+          if (data.response.current_observation) {
+            instance.weather = data.response;
+          } else {
+            instance.weather = {};
+            instance.weather.error = true;
+          }
         }
 
         instance.last_update = Math.round(new Date().getTime()/1000.0);
