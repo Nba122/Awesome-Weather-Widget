@@ -6,7 +6,8 @@
       "/js/xml2array.js",
       "api_key.js",
       "/js/background.js"
-    ]
+    ],
+    "persistent": false
   },
   "version": "2012.145.0.1",
   "name": "Awesome Weather Widget [ANTP]",
