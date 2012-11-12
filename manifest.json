@@ -8,7 +8,7 @@
       "/js/background.js"
     ]
   },
-  "version": "2012.135.4.0",
+  "version": "2012.145.0.1",
   "name": "Awesome Weather Widget [ANTP]",
   "description": "Awesome weather widget for Awesome New Tab Page. Resizable and multi-placeable. [ANTP]",
   "options_page": "options.html",
