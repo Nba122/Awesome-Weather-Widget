@@ -23,7 +23,6 @@
 
     $scope.weather = {};
     $scope.revisionCount = 0;
-    $scope.error = false;
 
     $scope.update = function() {
       var instance = JSON.parse(localStorage.getItem( get_guid() ));
@@ -33,12 +32,10 @@
       }
 
       if (instance.weather.error) {
-        $scope.error = instance.weather.error.description;
         $(".widgets").hide();
         $(".error").show();
         return;
       } else {
-        $scope.error = false;
         $(".widgets").show();
         $(".error").hide();
       }
@@ -76,8 +73,18 @@
       // "custom" icons
       $scope.weather.icon_url_custom = "/img/weather/" + iconReplace($scope.weather.current_observation.icon) + ".png";
       $scope.weather.icons = {};
+
+      // because apparently forecastdays and forecastday are interchangeable object-arrays now...
+      $scope.weather.days = {};
+      var days = {};
+      if (typeof $scope.weather.forecast.simpleforecast.forecastdays === "object") {
+        days = $scope.weather.forecast.simpleforecast.forecastdays.forecastday;
+      } else {
+        days = $scope.weather.forecast.simpleforecast.forecastday;
+      }
       var x = 0;
-      $.each($scope.weather.forecast.simpleforecast.forecastdays.forecastday, function(key, val) {
+      $.each(days, function(key, val) {
+        $scope.weather.days[x] = val;
         $scope.weather.icons[x] = "/img/weather/" + iconReplace(val.icon) + ".png";
         x++;
       });

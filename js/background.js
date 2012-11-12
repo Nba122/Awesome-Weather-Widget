@@ -65,6 +65,23 @@ $(window).bind("storage", function (e) {
   update();
 });
 
+function getCoords(place) {
+  var return_location = "";
+  $.ajax({
+    url : "https://maps.googleapis.com/maps/api/geocode/json",
+    data: {"address": place, sensor: false},
+    dataType: "json",
+    async: false,
+    success: function(data) {
+      if (data.status == "OK") {
+        var location = data.results[0].geometry.location;
+        return_location = location.lat + "," + location.lng;
+      }
+    }
+  });
+  return return_location;
+}
+
 function update() {
   if (!API_KEY || API_KEY === "YOUR_KEY_HERE") {
     console.error("Need API key. See api_key.example.js", API_KEY);
@@ -92,21 +109,14 @@ function update() {
         instance.last_update = 1;
       }
 
-      if ( (now - instance.last_update) > 1*60*60 ) { // if updated more than 1 hour ago, update it
-        var
-          url = "https://api.wunderground.com/api/"+API_KEY+"/conditions/forecast/q/"+encodeURIComponent(place)+".xml",
-          xml = new JKL.ParseXML( url ),
-          data = xml.parse();
-
-          console.log(data);
-
-        if ( data && typeof data === "object" ) {
-          if (data.response.current_observation) {
-            instance.weather = data.response;
-          } else {
-            instance.weather = {};
-            instance.weather.error = true;
+      if ( (now - instance.last_update) > 1*60*60 ) { // if updated more than 1 hour ago, update it        
+        instance.weather = getWeather(place, false);
+        if(instance.weather.error) { // check with coordinates
+          if (instance.coord_place != place) { // to save Googles oh-so-precious bandwidth (and the users...)
+            instance.coords = getCoords(place);
+            instance.coord_place = place;
           }
+          instance.weather = getWeather(place, true, instance.coords);
         }
 
         instance.last_update = Math.round(new Date().getTime()/1000.0);
@@ -120,6 +130,27 @@ function update() {
       localStorage.removeItem(instance_id);
     }
   }
+}
+
+function getWeather(place, isCoords, coords) {
+  place = (isCoords === false ? encodeURIComponent(place) : coords);
+  
+  var
+    url = "https://api.wunderground.com/api/"+API_KEY+"/conditions/forecast/q/"+place+".xml",
+    xml = new JKL.ParseXML( url ),
+    data = xml.parse(),
+    weather = {};
+
+  if ( data && typeof data === "object" ) {
+    if (data.response.current_observation) {
+      weather = data.response;
+    } else {
+      weather.error = true;
+    }
+  } else {
+    weather.error = true;
+  }
+  return weather;
 }
 
 setInterval(update, 4*60*60*1000);

@@ -236,7 +236,7 @@
 
   <body>
     <div ng-controller="WeatherCtrl">
-      <div class="widgets animation {{weather.style}}">
+      <div class="widgets {{weather.style}}">
         <div class="place animation">{{ weather.current_observation.display_location.city }} <a class="edit animation fade" href="options.html" target="_top"></a></div>
         <div class="inline-block mover animation">
           <div class="inline left">
@@ -251,49 +251,49 @@
         <div class="subs animation">
           <div class="sub">
             <div class="subsub">
-              <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[0].date.weekday_short}}</div>
+              <div class="smalltext">{{weather.days[0].date.weekday_short}}</div>
               <div class="inline-block">
-                <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[0].conditions}}" ng-src="{{weather.icons[0]}}" class="sub_img animation {{weather.style}}-img">
+                <img title="{{weather.days[0].conditions}}" ng-src="{{weather.icons[0]}}" class="sub_img animation {{weather.style}}-img">
               </div>
               <div class="smalltext">
-                <div class="{{weather.style}}-darktext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[0].high[unitlong] | number:0 }}&deg;</div>
-                <div class="{{weather.style}}-lighttext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[0].low[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-darktext">{{ weather.days[0].high[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-lighttext">{{ weather.days[0].low[unitlong] | number:0 }}&deg;</div>
               </div>
             </div>
           </div>
           <div class="sub">
             <div class="subsub">
-              <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[1].date.weekday_short}}</div>
+              <div class="smalltext">{{weather.days[1].date.weekday_short}}</div>
               <div class="inline-block">
-                <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[1].conditions}}" ng-src="{{weather.icons[1]}}" class="sub_img animation {{weather.style}}-img">
+                <img title="{{weather.days[1].conditions}}" ng-src="{{weather.icons[1]}}" class="sub_img animation {{weather.style}}-img">
               </div>
               <div class="smalltext">
-                <div class="{{weather.style}}-darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[1].high[unitlong] | number:0 }}&deg;</div>
-                <div class="{{weather.style}}-lighttext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[1].low[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-darktext"> {{ weather.days[1].high[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-lighttext">{{ weather.days[1].low[unitlong] | number:0 }}&deg;</div>
               </div>
             </div>
           </div>
           <div class="sub">
             <div class="subsub">
-              <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[2].date.weekday_short}}</div>
+              <div class="smalltext">{{weather.days[2].date.weekday_short}}</div>
               <div class="inline-block">
-                <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[2].conditions}}" ng-src="{{weather.icons[2]}}" class="sub_img animation {{weather.style}}-img">
+                <img title="{{weather.days[2].conditions}}" ng-src="{{weather.icons[2]}}" class="sub_img animation {{weather.style}}-img">
               </div>
               <div class="smalltext">
-                <div class="{{weather.style}}-darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[2].high[unitlong] | number:0 }}&deg;</div>
-                <div class="{{weather.style}}-lighttext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[2].low[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-darktext"> {{ weather.days[2].high[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-lighttext">{{ weather.days[2].low[unitlong] | number:0 }}&deg;</div>
               </div>
             </div>
           </div>
           <div class="sub">
             <div class="subsub">
-              <div class="smalltext">{{weather.forecast.simpleforecast.forecastdays.forecastday[3].date.weekday_short}}</div>
+              <div class="smalltext">{{weather.days[3].date.weekday_short}}</div>
               <div class="inline-block">
-                <img title="{{weather.forecast.simpleforecast.forecastdays.forecastday[3].conditions}}" ng-src="{{weather.icons[3]}}" class="sub_img animation {{weather.style}}-img">
+                <img title="{{weather.days[3].conditions}}" ng-src="{{weather.icons[3]}}" class="sub_img animation {{weather.style}}-img">
               </div>
               <div class="smalltext">
-                <div class="{{weather.style}}-darktext"> {{ weather.forecast.simpleforecast.forecastdays.forecastday[3].high[unitlong] | number:0 }}&deg;</div>
-                <div class="{{weather.style}}-lighttext">{{ weather.forecast.simpleforecast.forecastdays.forecastday[3].low[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-darktext"> {{ weather.days[3].high[unitlong] | number:0 }}&deg;</div>
+                <div class="{{weather.style}}-lighttext">{{ weather.days[3].low[unitlong] | number:0 }}&deg;</div>
               </div>
             </div>
           </div>
