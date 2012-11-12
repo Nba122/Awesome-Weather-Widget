@@ -112,7 +112,7 @@ function update() {
       if ( (now - instance.last_update) > 1*60*60 ) { // if updated more than 1 hour ago, update it        
         instance.weather = getWeather(place, false);
         if(instance.weather.error) { // check with coordinates
-          if (instance.coord_place != place) { // to save Googles oh-so-precious bandwidth (and the users...)
+          if (instance.coord_place !== place) { // to save Googles oh-so-precious bandwidth (and the users...)
             instance.coords = getCoords(place);
             instance.coord_place = place;
           }
@@ -153,5 +153,8 @@ function getWeather(place, isCoords, coords) {
   return weather;
 }
 
-setInterval(update, 4*60*60*1000);
-update();
+chrome.alarms.onAlarm.addListener(function(alarm){
+  update();
+});
+
+chrome.alarms.create("updateWeather", {periodInMinutes: 4*60*60});
