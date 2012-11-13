@@ -157,4 +157,4 @@ chrome.alarms.onAlarm.addListener(function(alarm){
   update();
 });
 
-chrome.alarms.create("updateWeather", {periodInMinutes: 4*60*60});
+chrome.alarms.create("updateWeather", {periodInMinutes: 4*60});

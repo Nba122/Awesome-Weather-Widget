@@ -138,7 +138,21 @@
 
     $(".non-android-style").css("background-color", instance.color || "#1CA1DC");
 
+    // Handles when the widget is resized
+    $(window).bind("resize", function() {
+      restyle();
+    });
+    restyle();
   });
+
+  function restyle() {
+    if ( $(window).width() > 400 ) {
+      $("body").addClass("wide");
+    } else {
+      $("body").removeClass("wide");
+    }
+  }
+
 
   /* END :: Legacy Style Code */
 

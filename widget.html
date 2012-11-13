@@ -32,6 +32,7 @@
         background-size: 406px 200px;
         color: white;
         padding: 5px;
+        padding-right: 20px;
         display: none;
       }
 
@@ -107,6 +108,7 @@
         float: left;
         text-transform: uppercase;
         text-align: center;
+        margin-left: 18px;
       }
 
       .subsub {
@@ -116,6 +118,7 @@
 
       .bigtemp {
         width: 120px;
+        font-size: 48px;
         text-align: center;
       }
 
@@ -177,59 +180,43 @@
         width: -webkit-calc(100% - 25px);
       }
 
-      @media screen and (min-width:200px) {
-        .bigtemp {
-          font-size: 48px;
-        }
-
-        .bigtemp-false {
-          font-size: 56px;
-        }
-
-        .smalltext {
-          font-size: 10px;
-        }
-        .subs {
-
-        }
-        .sub {
-          margin-left: 18px;
-        }
-        .sub_img {
-          width: 20px;
-          height: 20px;
-        }
-        .error {
-          padding-right: 20px;
-        }
+      .bigtemp-false {
+        font-size: 56px;
       }
 
-      @media screen and (min-width:400px) {
-        .bigtemp {
-          font-size: 56px;
-        }
+      .smalltext {
+        font-size: 10px;
+      }
 
-        .bigtemp-false {
-          font-size: 80px;
-        }
-        .mover {
-          margin-top: 17px; /* only for animation purposes, doesn't actually move it */
-        }
-        .subs {
-          display: inline-block;
-        }
-        .smalltext {
-          font-size: 16px;
-        }
-        .sub {
-          margin-left: 5px;
-          line-height: 20px;
-        }
-        .sub_img {
-          margin-top: 4px;
-          width: 45px;
-          height: 45px;
-        }
+      .sub_img {
+        width: 20px;
+        height: 20px;
+      }
+
+      body.wide .bigtemp {
+        font-size: 56px;
+      }
+
+      body.wide .bigtemp-false {
+        font-size: 80px;
+      }
+      body.wide .mover {
+        margin-top: 17px; /* only for animation purposes, doesn't actually move it */
+      }
+      body.wide .subs {
+        display: inline-block;
+      }
+      body.wide .smalltext {
+        font-size: 16px;
+      }
+      body.wide .sub {
+        margin-left: 5px;
+        line-height: 20px;
+      }
+      body.wide .sub_img {
+        margin-top: 4px;
+        width: 45px;
+        height: 45px;
       }
     </style>
   </head>
