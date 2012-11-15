@@ -154,17 +154,34 @@
         font-size: 11px;
       }
 
+      .menu {
+        width: 23px;
+        height: 23px;
+        background-image: url("/img/menu.png");
+        background-position: -5px 27px;
+        cursor: pointer;
+        display: inline-block;
+
+        position: absolute;
+        right: 5px;
+        top: 12px;
+      }
+
+      .menu:hover {
+        background-position: -37px 27px;
+      }
+
       .edit {
         width: 23px;
         height: 23px;
-        background-image: url("/img/pencil.png");
+        background-image: url("/img/menu.png");
         background-position: -5px -5px;
         cursor: pointer;
         display: inline-block;
         opacity: 0;
 
         position: absolute;
-        right: 5px;
+        right: 30px;
         top: 12px;
       }
 
@@ -177,6 +194,10 @@
       }
 
       body:hover .place {
+        width: -webkit-calc(100% - 50px);
+      }
+
+      body .place {
         width: -webkit-calc(100% - 25px);
       }
 
@@ -224,7 +245,7 @@
   <body>
     <div ng-controller="WeatherCtrl">
       <div class="widgets {{weather.style}}">
-        <div class="place animation">{{ weather.current_observation.display_location.city }} <a class="edit animation fade" href="options.html" target="_top"></a></div>
+        <div class="place animation">{{ weather.current_observation.display_location.city }} <a class="edit animation fade" href="options.html" target="_top" title="Edit"></a><a class="menu" href="{{forecast_url}}" target="_top" title="Open Forecast"></a></div>
         <div class="inline-block mover animation">
           <div class="inline left">
             <img ng-src="{{ weather.icon_url_custom }}" class="inline weathericon {{weather.style}}-img">
