@@ -109,7 +109,7 @@ function update() {
         instance.last_update = 1;
       }
 
-      if ( (now - instance.last_update) > 1*60*60 ) { // if updated more than 1 hour ago, update it        
+      if ( (now - instance.last_update) > 1*60*60 ) { // if updated more than 1 hour ago, update it
         instance.weather = getWeather(place, false);
         if(instance.weather.error) { // check with coordinates
           if (instance.coord_place !== place) { // to save Googles oh-so-precious bandwidth (and the users...)
@@ -130,11 +130,12 @@ function update() {
       localStorage.removeItem(instance_id);
     }
   }
+  convert();
 }
 
 function getWeather(place, isCoords, coords) {
   place = (isCoords === false ? encodeURIComponent(place) : coords);
-  
+
   var
     url = "https://api.wunderground.com/api/"+API_KEY+"/conditions/forecast/q/"+place+".xml",
     xml = new JKL.ParseXML( url ),
@@ -152,6 +153,19 @@ function getWeather(place, isCoords, coords) {
   }
   return weather;
 }
+
+function convert() { // sync localstorage to Chrome Sync (for exported ANTP)
+  for (var key in localStorage) {
+    if (key.length == 36) { // a proper GUID
+      var store = {};
+      store[key] = JSON.parse(localStorage[key]);
+      store[key].weather = null;
+      chrome.storage.sync.set(store);
+    }
+  }
+}
+
+convert();
 
 chrome.alarms.onAlarm.addListener(function(alarm){
   update();
