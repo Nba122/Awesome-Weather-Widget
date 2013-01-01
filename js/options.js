@@ -8,9 +8,8 @@ function save() {
 
   instance.place = $("#place").val();
   instance.unit = $("#unit").val();
-  // instance.hl = $("#hl").val();
+  instance.hl = $("#hl").val();
   instance.style = $("#style").val();
-  // instance.config = $("#config").val();
   instance.color = $("#colorSelector").css("background-color");
 
   instance.last_update = Math.round(new Date().getTime()/1000.0)-(6*60*60);
@@ -33,9 +32,8 @@ function reset() {
 
   $("#place").val( instance.place || "San Francisco, CA" );
   $("#unit").val( instance.unit || "F" );
-  // $("#hl").val( instance.unit || "en" );
+  $("#hl").val( instance.hl || "EN" );
   $("#style").val( instance.style || "A" );
-  // $("#config").val( instance.style || "show" );
 
   $("#guid").text( get_guid() );
 

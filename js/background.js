@@ -92,8 +92,8 @@ function update() {
     var
       instance = JSON.parse(localStorage[instance_id]),
       now = Math.round(new Date().getTime()/1000.0),
-      place = instance.place || "San Francisco, CA",
-      hl = instance.hl || "en";
+      place = instance.place || "San Francisco, CA";
+    instance.hl = instance.hl || "EN";
 
     if ( !instance.last_accessed ) {
       instance.last_accessed = Math.round(new Date().getTime()/1000.0);
@@ -110,18 +110,17 @@ function update() {
       }
 
       if ( (now - instance.last_update) > 1*60*60 ) { // if updated more than 1 hour ago, update it
-        instance.weather = getWeather(place, false);
+        instance.weather = getWeather(place, instance.hl, false);
         if(instance.weather.error) { // check with coordinates
           if (instance.coord_place !== place) { // to save Googles oh-so-precious bandwidth (and the users...)
             instance.coords = getCoords(place);
             instance.coord_place = place;
           }
-          instance.weather = getWeather(place, true, instance.coords);
+          instance.weather = getWeather(place, instance.hl, true, instance.coords);
         }
 
         instance.last_update = Math.round(new Date().getTime()/1000.0);
         localStorage.setItem(instance_id, JSON.stringify(instance));
-
       }
     } else if ( (now - instance.last_accessed) > 2419200 ) { // if accessed more than 4 weeks ago, delete it
       console.warn(instance_id, "hasn't been accessed in 4 weeks. Removing completely.")
@@ -133,11 +132,11 @@ function update() {
   convert();
 }
 
-function getWeather(place, isCoords, coords) {
+function getWeather(place, language, isCoords, coords) {
   place = (isCoords === false ? encodeURIComponent(place) : coords);
 
   var
-    url = "https://api.wunderground.com/api/"+API_KEY+"/conditions/forecast/q/"+place+".xml",
+    url = "https://api.wunderground.com/api/"+API_KEY+"/conditions/forecast/lang:"+language+"/q/"+place+".xml",
     xml = new JKL.ParseXML( url ),
     data = xml.parse(),
     weather = {};
