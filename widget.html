@@ -221,9 +221,6 @@
       body.wide .bigtemp-false {
         font-size: 80px;
       }
-      body.wide .mover {
-        margin-top: 17px; /* only for animation purposes, doesn't actually move it */
-      }
       body.wide .subs {
         display: inline-block;
       }
@@ -246,7 +243,7 @@
     <div ng-controller="WeatherCtrl">
       <div class="widgets {{weather.style}}">
         <div class="place animation">{{ weather.current_observation.display_location.city }} <a class="edit animation fade" href="options.html" target="_top" title="Edit"></a><a class="menu" href="{{forecast_url}}" target="_top" title="Open Forecast"></a></div>
-        <div class="inline-block mover animation">
+        <div class="inline-block animation">
           <div class="inline left">
             <img ng-src="{{ weather.icon_url_custom }}" class="inline weathericon {{weather.style}}-img">
             <div class="animation condition">{{ weather.current_observation.weather }}</div>
