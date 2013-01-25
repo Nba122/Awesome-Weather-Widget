@@ -12,11 +12,12 @@ function save() {
   instance.style = $("#style").val();
   instance.color = $("#colorSelector").css("background-color");
 
-  instance.last_update = Math.round(new Date().getTime()/1000.0)-(6*60*60);
+  instance.last_update = Math.round(new Date().getTime() / 1000.0)-(6 * 60 * 60);
 
   localStorage.setItem(get_guid(), JSON.stringify(instance));
 
   bp.update();
+  bp.moveLocalStorageToChromeStorage(true);
 
   $.jGrowl("You're awesome.", {header: "Saved!!1!", position: "top-right"});
 }
@@ -68,7 +69,7 @@ function reset() {
   }).css("background-color", color);
 
   if ( instance.last_accessed ) {
-    $("#last_accessed").text( dateFormat(instance.last_accessed*1000, "mmmm dS, yyyy, h:MM TT") );
+    $("#last_accessed").text( dateFormat(instance.last_accessed * 1000, "mmmm dS, yyyy, h:MM TT") );
   }
 
 }

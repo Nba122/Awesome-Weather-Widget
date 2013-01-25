@@ -91,12 +91,12 @@ function update() {
   for (instance_id in localStorage) {
     var
       instance = JSON.parse(localStorage[instance_id]),
-      now = Math.round(new Date().getTime()/1000.0),
+      now = Math.round(new Date().getTime() / 1000.0),
       place = instance.place || "San Francisco, CA";
     instance.hl = instance.hl || "EN";
 
     if ( !instance.last_accessed ) {
-      instance.last_accessed = Math.round(new Date().getTime()/1000.0);
+      instance.last_accessed = Math.round(new Date().getTime() / 1000.0);
     }
 
     if ( !instance.last_update ) {
@@ -109,7 +109,7 @@ function update() {
         instance.last_update = 1;
       }
 
-      if ( (now - instance.last_update) > 1*60*60 ) { // if updated more than 1 hour ago, update it
+      if ( (now - instance.last_update) > 1 * 60 * 60 ) { // if updated more than 1 hour ago, update it
         instance.weather = getWeather(place, instance.hl, false);
         if(instance.weather.error) { // check with coordinates
           if (instance.coord_place !== place) { // to save Googles oh-so-precious bandwidth (and the users...)
@@ -119,7 +119,7 @@ function update() {
           instance.weather = getWeather(place, instance.hl, true, instance.coords);
         }
 
-        instance.last_update = Math.round(new Date().getTime()/1000.0);
+        instance.last_update = Math.round(new Date().getTime() / 1000.0);
         localStorage.setItem(instance_id, JSON.stringify(instance));
       }
     } else if ( (now - instance.last_accessed) > 2419200 ) { // if accessed more than 4 weeks ago, delete it
@@ -152,8 +152,66 @@ function getWeather(place, language, isCoords, coords) {
   return weather;
 }
 
-chrome.alarms.onAlarm.addListener(function(alarm){
+chrome.alarms.onAlarm.addListener(function(alarm) {
   update();
 });
 
-chrome.alarms.create("updateWeather", {periodInMinutes: 4*60});
+chrome.alarms.create("updateWeather", {periodInMinutes: 4 * 60});
+
+function moveChromeStorageToLocalStorage() {
+
+  var now = Math.round(new Date().getTime() / 1000.0);
+
+  chrome.storage.sync.get(null, function(data) {
+    for (instance_id in data) {
+      if ((now - data[instance_id].last_accessed) > 2419200) {
+        chrome.storage.sync.remove(instance_id);
+      } else {
+        var json = {};
+        if ( localStorage[instance_id] )
+          json = JSON.parse(localStorage[instance_id]);
+
+        if ( json.hl  !== data[instance_id].hl
+        || json.place !== data[instance_id].place
+        || json.color !== data[instance_id].color
+        || json.style !== data[instance_id].style
+        || json.unit  !== data[instance_id].unit ) {
+
+          localStorage.setItem(instance_id, JSON.stringify(data[instance_id]));
+        }
+      }
+    }
+  });
+
+  setTimeout(moveChromeStorageToLocalStorage, 60 * 60 * 1000);
+}
+
+function moveLocalStorageToChromeStorage(override) {
+  var storage = JSON.parse(JSON.stringify(localStorage));
+  chrome.storage.sync.get(null, function(data) {
+
+    for ( var widget in storage ) {
+
+      var json = JSON.parse(storage[widget]);
+      json.weather = null;
+
+      if ( override )
+        data[widget] = undefined;
+
+      if ( typeof data[widget] === "undefined"
+      || json.hl    !== data[widget].hl
+      || json.place !== data[widget].place
+      || json.color !== data[widget].color
+      || json.style !== data[widget].style
+      || json.unit  !== data[widget].unit ) {
+
+        var store = {};
+        store[widget] = json;
+        chrome.storage.sync.set(store);
+      }
+    }
+  });
+}
+
+moveChromeStorageToLocalStorage();
+moveLocalStorageToChromeStorage();
