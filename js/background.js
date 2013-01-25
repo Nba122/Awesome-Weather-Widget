@@ -129,7 +129,6 @@ function update() {
       localStorage.removeItem(instance_id);
     }
   }
-  convert();
 }
 
 function getWeather(place, language, isCoords, coords) {
@@ -152,19 +151,6 @@ function getWeather(place, language, isCoords, coords) {
   }
   return weather;
 }
-
-function convert() { // sync localstorage to Chrome Sync (for exported ANTP)
-  for (var key in localStorage) {
-    if (key.length == 36) { // a proper GUID
-      var store = {};
-      store[key] = JSON.parse(localStorage[key]);
-      store[key].weather = null;
-      chrome.storage.sync.set(store);
-    }
-  }
-}
-
-convert();
 
 chrome.alarms.onAlarm.addListener(function(alarm){
   update();

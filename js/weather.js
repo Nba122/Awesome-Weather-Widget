@@ -22,72 +22,74 @@
   function WeatherCtrl($scope) {
 
     $scope.weather = {};
+    $scope.revisionCount = 0;
 
     $scope.update = function() {
-      chrome.storage.sync.get(get_guid(), function(data) {
-        var instance = data[get_guid()];
-        instance.weather = JSON.parse(localStorage.getItem( get_guid() )).weather;
-        if (!instance.weather) {
-          return;
-        }
+      var instance = JSON.parse(localStorage.getItem( get_guid() ));
 
-        if (instance.weather.error) {
-          $(".widgets").hide();
-          $(".error").show();
-          return;
-        } else {
-          $(".widgets").show();
-          $(".error").hide();
-        }
+      if (!instance.weather) {
+        return;
+      }
 
-        $scope.place = instance.place || "San Francisco, CA";
-        $scope.unit = instance.unit || "F";
-        $scope.config = instance.config || "show";
-        $scope.weather = instance.weather;
-        if ( $scope.unit === "C" ) {
-          $scope.unit = "c";
-          $scope.unitlong = "celsius";
-        } else {
-          $scope.unit = "f";
-          $scope.unitlong = "fahrenheit";
-        }
+      if (instance.weather.error) {
+        $(".widgets").hide();
+        $(".error").show();
+        return;
+      } else {
+        $(".widgets").show();
+        $(".error").hide();
+      }
 
-        if ( Math.round(($scope.weather.current_observation['temp_'+$scope.unit])).toString().length > 2 ) {
-          $scope.weather.three = true;
-        } else {
-          $scope.weather.three = false;
-        }
+      $scope.place = instance.place || "San Francisco, CA";
+      $scope.unit = instance.unit || "F";
+      $scope.config = instance.config || "show";
+      $scope.weather = instance.weather;
+      if ( $scope.unit === "C" ) {
+        $scope.unit = "c";
+        $scope.unitlong = "celsius";
+      } else {
+        $scope.unit = "f";
+        $scope.unitlong = "fahrenheit";
+      }
 
-        $scope.forecast_url = addParameter($scope.weather.current_observation.forecast_url, "apiref", "5c1723f8db3949e2");
+      if ( Math.round(($scope.weather.current_observation['temp_'+$scope.unit])).toString().length > 2 ) {
+        $scope.weather.three = true;
+      } else {
+        $scope.weather.three = false;
+      }
 
+      $scope.forecast_url = addParameter($scope.weather.current_observation.forecast_url, "apiref", "5c1723f8db3949e2");
 
-        //theme changes (so it changes while ANTP is open, after changing settings)
-        $scope.weather.style = (instance.style === "M" ? "non-android-style" : "android-style");
-        if ($scope.weather.style === "non-android-style") {
-          $(".widgets").css("background-color", instance.color || "#1CA1DC");
-        }
-
-        // "custom" icons
-        $scope.weather.icon_url_custom = "/img/weather/" + iconReplace($scope.weather.current_observation.icon) + ".png";
-        $scope.weather.icons = {};
-
-        // because apparently forecastdays and forecastday are interchangeable object-arrays now...
-        $scope.weather.days = {};
-        var days = {};
-        if (typeof $scope.weather.forecast.simpleforecast.forecastdays === "object") {
-          days = $scope.weather.forecast.simpleforecast.forecastdays.forecastday;
-        } else {
-          days = $scope.weather.forecast.simpleforecast.forecastday;
-        }
-        var x = 0;
-        $.each(days, function(key, val) {
-          $scope.weather.days[x] = val;
-          $scope.weather.icons[x] = "/img/weather/" + iconReplace(val.icon) + ".png";
-          x++;
-        });
-
+      if ( $scope.revisionCount !== 0 ) {
         $scope.$apply();
+      }
+
+      //theme changes (so it changes while ANTP is open, after changing settings)
+      $scope.weather.style = (instance.style === "M" ? "non-android-style" : "android-style");
+      if ($scope.weather.style === "non-android-style") {
+        $(".widgets").css("background-color", instance.color || "#1CA1DC");
+      }
+
+      // "custom" icons
+      $scope.weather.icon_url_custom = "/img/weather/" + iconReplace($scope.weather.current_observation.icon) + ".png";
+      $scope.weather.icons = {};
+
+      // because apparently forecastdays and forecastday are interchangeable object-arrays now...
+      $scope.weather.days = {};
+      var days = {};
+      if (typeof $scope.weather.forecast.simpleforecast.forecastdays === "object") {
+        days = $scope.weather.forecast.simpleforecast.forecastdays.forecastday;
+      } else {
+        days = $scope.weather.forecast.simpleforecast.forecastday;
+      }
+      var x = 0;
+      $.each(days, function(key, val) {
+        $scope.weather.days[x] = val;
+        $scope.weather.icons[x] = "/img/weather/" + iconReplace(val.icon) + ".png";
+        x++;
       });
+
+      $scope.revisionCount++;
     };
 
     $scope.update();
@@ -123,18 +125,18 @@
 
   $(document).ready(function($) {
     var instance;
-
-    chrome.storage.sync.get(get_guid(), function(data) {
-      if ( data[get_guid()] ) {
-        instance = data[get_guid()];
-      }
-      $(".non-android-style").css("background-color", instance.color || "#1CA1DC");
-    });
+    if ( localStorage.getItem(get_guid()) ) {
+      instance = JSON.parse( localStorage.getItem(get_guid()) );
+    } else {
+      instance = {};
+    }
 
     // Being able to drag images just feels so tacky
     $("img").live("dragstart", function(event) { event.preventDefault(); });
 
     $(".edit").attr("href", "options.html" + window.location.hash);
+
+    $(".non-android-style").css("background-color", instance.color || "#1CA1DC");
 
     // Handles when the widget is resized
     $(window).bind("resize", function() {
@@ -150,6 +152,7 @@
       $("body").removeClass("wide");
     }
   }
+
 
   /* END :: Legacy Style Code */
 
