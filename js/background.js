@@ -205,9 +205,12 @@ function moveLocalStorageToChromeStorage(override) {
       || json.style !== data[widget].style
       || json.unit  !== data[widget].unit ) {
 
-        var store = {};
-        store[widget] = json;
-        chrome.storage.sync.set(store);
+        if (json.place) { // fixes a weird looping error
+          var store = {};
+          store[widget] = json;
+          chrome.storage.sync.set(store);
+        }
+
       }
     }
   });

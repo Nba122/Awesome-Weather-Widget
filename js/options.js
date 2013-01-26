@@ -23,7 +23,7 @@ function save() {
 }
 
 function reset() {
-  var instance;
+  var instance = {};
   if ( localStorage.getItem(get_guid()) ) {
     instance = JSON.parse( localStorage.getItem(get_guid()) );
   }
