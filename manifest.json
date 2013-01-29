@@ -9,7 +9,7 @@
     ],
     "persistent": false
   },
-  "version": "2012.146.7.0",
+  "version": "2013.105.3.0",
   "name": "Awesome Weather Widget [ANTP]",
   "description": "Awesome weather widget for Awesome New Tab Page. Resizable and multi-placeable. [ANTP]",
   "options_page": "options.html",
